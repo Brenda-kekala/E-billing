@@ -9,7 +9,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('tax_regime')->nullable()->after('is_admin');
+            $table->string('tax_regime')->nullable()->after('is_admin'); 
+            // the line above adds tax_regime column to the users table (string means it holds text)and stores tot and self-assessment 
         });
     }
 

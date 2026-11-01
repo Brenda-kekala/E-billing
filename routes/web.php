@@ -32,6 +32,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/tax', [TaxController::class, 'index'])->name('tax.index');
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+    // Inputs in record a payment are sent to /payments go to store() in paymentController
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy'); 
     Route::get('/self-assessment', [SelfAssessmentController::class, 'index'])->name('sa.index');
     Route::post('/expenses', [SelfAssessmentController::class, 'storeExpense'])->name('expenses.store');
@@ -39,6 +40,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/mpesa/pay', [MpesaController::class, 'pay'])->name('mpesa.pay');
     Route::get('/mpesa/status/{payment}', [MpesaController::class, 'status'])->name('mpesa.status');
     Route::post('/regime', [DashboardController::class, 'updateRegime'])->name('regime.update');
+    // Says slip sent to /regime go to updateRegime method in Dashboard Controller 
 });
 
 Route::middleware(['auth', 'admin', 'active'])->prefix('admin')->name('admin.')->group(function () {

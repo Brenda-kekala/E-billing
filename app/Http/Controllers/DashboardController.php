@@ -23,7 +23,11 @@ class DashboardController extends Controller
                 ->sum('amount');
 
             $tax = round($income * $rate, 2);
-            $paid = Payment::where('user_id', $userId)->where('period', $period)->sum('amount');
+            $paid = Payment::where('user_id', $userId)
+               ->where('period', $period)
+               ->whereNotIn('status', ['pending', 'failed'])
+               ->sum('amount');
+        
             $balance = max($tax - $paid, 0);
             $due = $start->copy()->addMonth()->day(20);
 
@@ -55,19 +59,22 @@ class DashboardController extends Controller
         }
 
         $payments = Payment::where('user_id', $userId)->orderBy('paid_on', 'desc')->get();
-
+       //its says open payment box and take only my payments and put the newest first  
         return view('dashboard', compact('rows', 'payments'));
-    }
+      // this puts list in a bag and hands it to the page
+        }
 
     public function updateRegime(\Illuminate\Http\Request $request)
 {
     $request->validate([
         'tax_regime' => 'required|in:tot,self_assessment',
     ]);
+    // Validate is the check and the slip must contain a choice either tot or self-assessment
 
     $request->user()->update(['tax_regime' => $request->tax_regime]);
-
+    //this writes the choice onto the logged-in user and nobody can change someone elses
     return redirect()->route('dashboard')->with('status', 'Tax regime updated.');
+    //this sends back to the dashboard with green Tax Refime updated message
 }
 
 }

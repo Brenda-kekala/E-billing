@@ -17,18 +17,20 @@
                     Choose how you want to be taxed. TOT is charged on gross income monthly; self-assessment is charged on net profit annually. You can switch at any time.
                 </p>
                 <form method="POST" action="{{ route('regime.update') }}" class="flex items-center gap-4">
-                    @csrf
+                <!-- when save is clicked, send this slip to route regime.update  -->
+                @csrf  
                     <select name="tax_regime" class="border-gray-300 rounded">
+                        <!-- The dropdown -->
                         <option value="tot" @selected(auth()->user()->tax_regime !== 'self_assessment')>Turnover Tax (TOT)</option>
                         <option value="self_assessment" @selected(auth()->user()->tax_regime === 'self_assessment')>Self-Assessment</option>
                      </select>
                      <button class="px-4 py-2 bg-gray-800 text-white rounded">Save</button>
                  </form>
             </div>
-        @if (auth()->user()->tax_regime !== 'self_assessment')
-            <div class="bg-white p-6 shadow rounded overflow-x-auto">
-                <h3 class="font-semibold mb-4">Turnover Tax status (last 3 months)</h3>
-                <table class="w-full text-left text-sm">
+            @if (auth()->user()->tax_regime !== 'self_assessment')
+                  <div class="bg-white p-6 shadow rounded overflow-x-auto">
+                  <h3 class="font-semibold mb-4">Turnover Tax status (last 3 months)</h3>
+                  <table class="w-full text-left text-sm">
                     <thead>
                         <tr class="border-b">
                             <th class="py-2">Period</th>
@@ -73,6 +75,8 @@
                 <p class="text-gray-600">You're on self-assessment. Visit the <a href="{{ route('sa.index') }}" class="text-blue-700 underline">Self-Assessment</a> page to calculate and compare your tax.</p>
             </div>
         @endif 
+        <!-- from 30 to 78 its if/ else and this aids show the content depending on what tax type they choose. 
+         If user doesnt choose any it says TOT, @if asks if the users card is self assess if not then TOT. From 30-72 its shows what happens in TOT the from 72-77its shows if not TOT then self-assess -->
 
             <div class="bg-white p-6 shadow rounded">
                 <h3 class="font-semibold mb-4">Record a payment</h3>
@@ -102,7 +106,7 @@
                     </div>
                 </form>
             </div>
-
+            <!-- From 81-108 it covers the record payment part where a user pays but writes it down in the app -->
             <div class="bg-white p-6 shadow rounded">
                 <h3 class="font-semibold mb-4">Pay via M-Pesa (sandbox)</h3>
                 <form method="POST" action="{{ route('mpesa.pay') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -125,6 +129,8 @@
                 </form>
                 <p class="text-xs text-gray-500 mt-2">Sandbox mode: no real money moves. Use the pre-filled test number.</p>
             </div>
+            <!-- from 110-131 is for pay via mpesa, it has the tax month, amount and phone. Phone is pre-filled with a number which
+             is safs sandbox test number. Pay button sends everything to the route mpesa.pay -->
 
             <div class="bg-white p-6 shadow rounded">
                 <h3 class="font-semibold mb-4">Payment history</h3>
@@ -135,6 +141,7 @@
                             <th>Tax month</th>
                             <th>Amount (KES)</th>
                             <th>Reference</th>
+                            <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -145,6 +152,17 @@
                                 <td>{{ $payment->period }}</td>
                                 <td>{{ number_format($payment->amount, 2) }}</td>
                                 <td>{{ $payment->reference }}</td>
+                                <td>
+                                    @if ($payment->status === 'completed')
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Completed</span>
+                                    @elseif ($payment->status === 'pending')
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">Pending</span>
+                                    @elseif ($payment->status === 'failed')
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs">Failed</span>
+                                    @else
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Manual</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <form method="POST" action="{{ route('payments.destroy', $payment) }}">
                                         @csrf

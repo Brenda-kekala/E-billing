@@ -10,12 +10,16 @@ class mpesaservice
     protected function baseUrl()
     {
         return config('mpesa.base_url');
+        // returns safs web address which is saved in config/mpesa.php
     }
 
     public function getAccessToken()
+    // This is a visitor badge. Sf doesnt talk to strangers so messenger must first get a visitor badge 
     {
         return Cache::remember('mpesa_access_token', 3500, function () {
-            $response = Http::withBasicAuth(
+    // the token mpesa access-3500 is wrapped in cache remember to allow the user 
+    // to reuse the token for about 3500 secs(58mins)instead of asking saf for a new one on every payment  
+        $response = Http::withBasicAuth(
                 config('mpesa.consumer_key'),
                 config('mpesa.consumer_secret')
             )->get($this->baseUrl() . '/oauth/v1/generate?grant_type=client_credentials');
@@ -32,10 +36,10 @@ class mpesaservice
     protected function password($timestamp)
     {
         return base64_encode(config('mpesa.shortcode') . config('mpesa.passkey') . $timestamp);
-    }
+    // glues business no, secret key saf gave you and the time.Itds proof that request comes from a business
 
     public function stkPush($phone, $amount, $reference, $description)
-    {
+    // this asks for a payment (sends a pop-up payment address)
         $timestamp = $this->timestamp();
 
         $response = Http::withToken($this->getAccessToken())
@@ -57,6 +61,7 @@ class mpesaservice
     }
 
     public function queryStatus($checkoutRequestId)
+    // Asks if it was paid
     {
         $timestamp = $this->timestamp();
 

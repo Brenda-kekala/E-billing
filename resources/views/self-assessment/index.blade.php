@@ -107,7 +107,60 @@
                     <p class="text-sm text-green-700 mt-2">Turnover Tax looks cheaper on these figures.</p>
                 @endif
             </div>
+            </div>
 
+            <div class="bg-white p-6 shadow rounded">
+                <h3 class="font-semibold mb-4">Record a business expense</h3>
+                <form method="POST" action="{{ route('expenses.store') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    @csrf
+                    <div>
+                        <label class="block text-sm">Date</label>
+                        <input type="date" name="expense_date" value="{{ old('expense_date', date('Y-m-d')) }}" class="w-full border-gray-300 rounded" required>
+                        @error('expense_date') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm">Amount (KES)</label>
+                        <input type="number" step="0.01" name="amount" value="{{ old('amount') }}" class="w-full border-gray-300 rounded" required>
+                        @error('amount') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm">Description</label>
+                        <input type="text" name="description" value="{{ old('description') }}" placeholder="Rent, stock, transport" class="w-full border-gray-300 rounded">
+                    </div>
+                    <div class="flex items-end">
+                        <button class="px-4 py-2 bg-gray-800 text-white rounded">Save</button>
+                    </div>
+                </form>
+
+                <table class="w-full text-left text-sm mt-6">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="py-2">Date</th>
+                            <th>Amount (KES)</th>
+                            <th>Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($expenses as $expense)
+                            <tr class="border-b">
+                                <td class="py-2">{{ $expense->expense_date }}</td>
+                                <td>{{ number_format($expense->amount, 2) }}</td>
+                                <td>{{ $expense->description }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('expenses.destroy', $expense) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="text-red-600 text-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="4" class="py-3 text-gray-500">No expenses recorded for {{ $year }}.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
            
             <p class="text-xs text-gray-500">
                 This is a simplified estimate. It does not include other reliefs such as insurance, pension or mortgage interest,

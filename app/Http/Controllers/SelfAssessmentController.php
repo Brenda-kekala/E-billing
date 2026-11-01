@@ -17,6 +17,10 @@ class SelfAssessmentController extends Controller
 
         $gross = Income::where('user_id', $userId)->whereYear('income_date', $year)->sum('amount');
         $expenseTotal = Expense::where('user_id', $userId)->whereYear('expense_date', $year)->sum('amount');
+        $expenses = Expense::where('user_id', $userId)
+           ->whereYear('expense_date', $year)
+           ->orderBy('expense_date', 'desc')
+           ->get(); 
         $profit = max($gross - $expenseTotal, 0);
 
         // Apply the tax bands
@@ -64,12 +68,12 @@ class SelfAssessmentController extends Controller
         $totTax = round($gross * config('tax.tot_rate'), 2);
         $totEligible = $gross >= config('tax.tot_min') && $gross <= config('tax.tot_max');
 
-        $expenseTotal = 0;
+    
 
         return view('self-assessment.index', compact(
             'year', 'gross', 'expenseTotal', 'profit', 'breakdown', 'grossTax', 'relief',
             'netTax', 'filingDeadline', 'instalments', 'latePenalty', 'totTax',
-            'totEligible'
+            'totEligible', 'expenses'
         ));
     }
 

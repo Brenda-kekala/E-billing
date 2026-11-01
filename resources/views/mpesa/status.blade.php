@@ -10,6 +10,14 @@
                 <div class="p-3 bg-blue-100 text-blue-800 rounded">{{ session('status') }}</div>
             @endif
 
+            @if ($payment->status === 'completed')
+                <div class="bg-green-50 border border-green-300 rounded-lg p-4 font-mono text-sm text-green-900">
+                    <p class="font-semibold mb-1">M-PESA Confirmation</p>
+                    <p>{{ $payment->mpesa_receipt }} Confirmed. KES{{ number_format($payment->amount, 2) }} paid to E-Billing for account {{ $payment->period }} on {{ $payment->paid_on }}. New M-PESA balance is KES{{ number_format(rand(500, 50000), 2) }}.</p>
+                    <p class="text-xs text-green-700 mt-2">(Simulated sandbox confirmation — no real money moved.)</p>
+                </div>
+            @endif
+
             <div class="bg-white p-6 shadow rounded">
                 <p class="text-sm text-gray-500">Tax month</p>
                 <p class="font-semibold mb-4">{{ $payment->period }}</p>
