@@ -44,7 +44,7 @@
                 @if ($payment->status === 'pending')
                     <a href="{{ route('mpesa.status', $payment) }}" class="inline-block px-4 py-2 bg-gray-800 text-white rounded">Refresh status</a>
                 @else
-                    <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 underline">Back to dashboard</a>
+                  <x-back-button :href="route('dashboard')">Back to dashboard</x-back-button>
                 @endif
             </div>
         </div>

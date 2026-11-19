@@ -11,7 +11,7 @@
                 <div class="p-3 bg-green-100 text-green-800 rounded">{{ session('status') }}</div>
             @endif
 
-            <a href="{{ route('admin.index') }}" class="text-sm text-gray-600 underline">&larr; Back to all taxpayers</a>
+            <x-back-button :href="route('admin.index')">Back to all taxpayers</x-back-button>
             <a href="{{ route('admin.user.edit', $user) }}" class="text-sm text-blue-700 underline ml-4">Edit this taxpayer</a>
 
             <form method="POST" action="{{ route('admin.user.toggle-active', $user) }}" class="inline ml-4">
@@ -112,6 +112,41 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <div class="bg-white shadow sm:rounded-lg p-6 mt-6">
+                <h3 class="text-lg font-semibold mb-3">Filed returns</h3>
+
+                @if ($returns->isEmpty())
+                    <p class="text-sm text-gray-500">This taxpayer has not filed any returns yet.</p>
+                @else
+                    <table class="min-w-full text-sm">
+                    <thead>
+                        <tr class="text-left border-b">
+                        <th class="py-2 pr-4">Period</th>
+                        <th class="py-2 pr-4">Income (KES)</th>
+                        <th class="py-2 pr-4">Tax (KES)</th>
+                        <th class="py-2 pr-4">Penalty (KES)</th>
+                        <th class="py-2 pr-4">Status</th>
+                        <th class="py-2 pr-4">Ack. no.</th>
+                        <th class="py-2">Filed on</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @foreach ($returns as $r)
+                         <tr class="border-b">
+                             <td class="py-2 pr-4">{{ \Carbon\Carbon::createFromFormat('Y-m', $r->period)->format('F Y') }}{{ $r->is_nil ? ' (nil)' : '' }}</td>
+                             <td class="py-2 pr-4">{{ number_format($r->income, 2) }}</td>
+                             <td class="py-2 pr-4">{{ number_format($r->tax, 2) }}</td>
+                             <td class="py-2 pr-4">{{ number_format($r->penalty, 2) }}</td>
+                             <td class="py-2 pr-4">{{ ucfirst($r->status) }}</td>
+                             <td class="py-2 pr-4 font-mono text-xs">{{ $r->acknowledgement_no }}</td>
+                             <td class="py-2">{{ $r->filed_at?->format('d M Y H:i') }}</td>
+                         </tr>
+                        @endforeach
+                    </tbody>
+                    </table>
+                 @endif
             </div>
         </div>
     </div>

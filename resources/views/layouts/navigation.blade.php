@@ -5,21 +5,24 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('incomes.index') }}" class="text-lg font-bold text-gray-800">
+                        E-Billing
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('incomes.index')" :active="request()->routeIs('incomes.*')">
                         {{ __('Income Records') }}
                     </x-nav-link>
                     <x-nav-link :href="route('tax.index')" :active="request()->routeIs('tax.*')">
                         {{ __('Tax Calculator') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('returns.index')" :active="request()->routeIs('returns.*')">
+                        {{ __('Returns') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Payment Records') }}
                     </x-nav-link>
                     <x-nav-link :href="route('sa.index')" :active="request()->routeIs('sa.*')">
                         {{ __('Self-Assessment') }}
@@ -81,14 +84,17 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('incomes.index')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('incomes.index')" :active="request()->routeIs('incomes.*')">
+            <x-responsive-nav-link :href="route('tax.index')" :active="request()->routeIs('incomes.*')">
                 {{ __('Income Records') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('tax.index')" :active="request()->routeIs('tax.*')">
+            <x-responsive-nav-link :href="route('returns.index')" :active="request()->routeIs('tax.*')">
                 {{ __('Tax Calculator') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('returns.*')">
+                {{ __('Returns') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('sa.index')" :active="request()->routeIs('sa.*')">
                 {{ __('Self-Assessment') }}

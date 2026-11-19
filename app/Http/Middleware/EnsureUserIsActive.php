@@ -10,6 +10,7 @@ class EnsureUserIsActive
     public function handle(Request $request, Closure $next)
     {
         if ($request->user() && ! $request->user()->is_active) {
+            // the request-user-is active is the link to DB
             auth()->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

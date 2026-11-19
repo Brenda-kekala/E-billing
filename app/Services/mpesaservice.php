@@ -37,8 +37,9 @@ class mpesaservice
     {
         return base64_encode(config('mpesa.shortcode') . config('mpesa.passkey') . $timestamp);
     // glues business no, secret key saf gave you and the time.Itds proof that request comes from a business
-
+    }
     public function stkPush($phone, $amount, $reference, $description)
+    {
     // this asks for a payment (sends a pop-up payment address)
         $timestamp = $this->timestamp();
 

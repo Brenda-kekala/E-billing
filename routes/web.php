@@ -9,7 +9,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ReturnController;
 /*
  Web Routes
 
@@ -34,16 +34,23 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
     // Inputs in record a payment are sent to /payments go to store() in paymentController
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy'); 
+    Route::get('/returns', [ReturnController::class, 'index'])->name('returns.index');
+    Route::post('/returns', [ReturnController::class, 'file'])->name('returns.file');
+    Route::get('/returns/{taxReturn}', [ReturnController::class, 'show'])->name('returns.show');
     Route::get('/self-assessment', [SelfAssessmentController::class, 'index'])->name('sa.index');
     Route::post('/expenses', [SelfAssessmentController::class, 'storeExpense'])->name('expenses.store');
     Route::delete('/expenses/{expense}', [SelfAssessmentController::class, 'destroyExpense'])->name('expenses.destroy');
     Route::post('/mpesa/pay', [MpesaController::class, 'pay'])->name('mpesa.pay');
     Route::get('/mpesa/status/{payment}', [MpesaController::class, 'status'])->name('mpesa.status');
+    Route::post('/mpesa/simulate', [MpesaController::class, 'simulate'])->name('mpesa.simulate');
+    Route::get('/mpesa/prompt/{payment}', [MpesaController::class, 'prompt'])->name('mpesa.prompt');
+    Route::post('/mpesa/prompt/{payment}', [MpesaController::class, 'confirm'])->name('mpesa.confirm');
+ 
     Route::post('/regime', [DashboardController::class, 'updateRegime'])->name('regime.update');
     // Says slip sent to /regime go to updateRegime method in Dashboard Controller 
 });
 
-Route::middleware(['auth', 'admin', 'active'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['auth', 'admin', 'active'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('user.edit');
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('user.update');
@@ -53,7 +60,9 @@ Route::middleware(['auth', 'admin', 'active'])->prefix('admin')->name('admin.')-
     Route::get('/export-pdf', [AdminController::class, 'exportPdf'])->name('export.pdf');
     Route::get('/users/{user}', [AdminController::class, 'show'])->name('user');
     Route::post('/incomes/{income}/flag', [AdminController::class, 'toggleFlag'])->name('incomes.flag');
+    Route::get('/occupations', [AdminController::class, 'occupations'])->name('occupations');
 });
+// 53-63 admin pages 
 
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/incomes', [IncomeController::class, 'index'])->name('incomes.index');

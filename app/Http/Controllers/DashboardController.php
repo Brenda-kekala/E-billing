@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Income;
 use App\Models\Payment;
+use App\Models\TaxReturn;
 
 class DashboardController extends Controller
 {
@@ -16,6 +17,10 @@ class DashboardController extends Controller
         for ($i = 0; $i < 3; $i++) {
             $start = now()->startOfMonth()->subMonths($i);
             $period = $start->format('Y-m');
+            $taxReturn = TaxReturn::where('user_id', $userId)
+                ->where('regime', 'tot')
+                ->where('period', $period)
+                ->first();
 
             $income = Income::where('user_id', $userId)
                 ->whereYear('income_date', $start->year)
@@ -32,6 +37,8 @@ class DashboardController extends Controller
             $due = $start->copy()->addMonth()->day(20);
 
             $penalty = 0;
+            if ($i === 0) {
+                $status = 'In progress';  //current month/tax period is not overand not payable yet
             if ($tax == 0) {
                 $status = 'No tax';
             } elseif ($balance == 0) {
@@ -55,6 +62,8 @@ class DashboardController extends Controller
                 'due'     => $due,
                 'status'  => $status,
                 'penalty' => round($penalty, 2),
+                'filing' => $taxReturn ? ucfirst($taxReturn->status) : 'Not filed',
+                'return' => $taxReturn,
             ];
         }
 
@@ -62,6 +71,8 @@ class DashboardController extends Controller
        //its says open payment box and take only my payments and put the newest first  
         return view('dashboard', compact('rows', 'payments'));
       // this puts list in a bag and hands it to the page
+        }
+        
         }
 
     public function updateRegime(\Illuminate\Http\Request $request)
@@ -73,8 +84,8 @@ class DashboardController extends Controller
 
     $request->user()->update(['tax_regime' => $request->tax_regime]);
     //this writes the choice onto the logged-in user and nobody can change someone elses
-    return redirect()->route('dashboard')->with('status', 'Tax regime updated.');
-    //this sends back to the dashboard with green Tax Refime updated message
+    return redirect()->route('incomes.index')->with('status', 'Tax regime updated.');
+    //this sends back to the income page with green Tax Refime updated message
 }
 
 }

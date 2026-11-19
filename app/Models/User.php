@@ -47,6 +47,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    // Our own billing account number, used as the Paybill account number
+public function getAccountNumberAttribute()
+{
+    return 'EB' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+    // 
+}
+
 
 
 }

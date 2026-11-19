@@ -39,7 +39,7 @@ class SendTaxReminders extends Command
             }
 
             $tax = round($income * $rate, 2);
-            $paid = Payment::where('user_id', $user->id)->where('period', $period)->sum('amount');
+            $paid = Payment::where('user_id', $user->id)->where('period', $period)->whereNotIn('status', ['pending', 'failed'])->sum('amount');
             $balance = max($tax - $paid, 0);
 
             if ($balance <= 0) {
@@ -48,16 +48,25 @@ class SendTaxReminders extends Command
 
             $status = now()->gt($dueDate->copy()->endOfDay()) ? 'Overdue' : 'Due';
 
-            Mail::to($user->email)->send(new TaxReminderMail(
-                $user->name,
-                $start->format('F Y'),
-                $balance,
-                $dueDate->format('d M Y'),
-                $status
+            try {
+
+                Mail::to($user->email)->send(new TaxReminderMail(
+                      $user->name,
+                      $start->format('F Y'),
+                      $balance,
+                      $dueDate->format('d M Y'),
+                      $status
             ));
 
             $sent++;
+            $this->line("Sent to {$user->email}");
+        } catch (\Exception $e) {
+            $this->error("Failed for {$user->email}: " . $e->getMessage());
         }
+
+            sleep(15); // pause so Mailtrap's free plan doesn't block us
+        }
+        
 
         $this->info("Sent {$sent} reminder email(s) for {$period}.");
     }

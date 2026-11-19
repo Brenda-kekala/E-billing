@@ -17,6 +17,13 @@ class PaymentController extends Controller
             // this checks the answers(validate) input by the user
         ]);
 
+        if ($data['period'] >= now()->format('Y-m')) {
+            return back()
+               ->withErrors(['period' => 'You cannot pay tax for a month until it has ended.'])
+               ->withInput();
+            //this rejects a user from bypassing the block current month in tax payment
+        }
+
         $data['user_id'] = auth()->id();
         // this stamps your number on the payment and cant save it under someones else
         Payment::create($data); 

@@ -8,6 +8,7 @@
 
             <div class="bg-white p-6 shadow rounded">
                 <form method="GET" action="{{ route('tax.index') }}" class="flex items-end gap-4">
+                    <!-- 10 creates the calculate button with a prefilled month -->
                     <div>
                         <label class="block text-sm">Select month</label>
                         <input type="month" name="month" value="{{ $month }}" class="border-gray-300 rounded">
@@ -29,6 +30,7 @@
                     <p class="text-sm text-gray-500">Payment due by</p>
                     <p class="text-2xl font-semibold">{{ $dueDate->format('d M Y') }}</p>
                 </div>
+                <!-- 20-32 is the 3 cards that appear in the page -->
             </div>
 
             <div class="bg-white p-6 shadow rounded">
@@ -43,6 +45,7 @@
                     <p class="text-green-700">Your yearly total is within the Turnover Tax range.</p>
                 @endif
             </div>
+            <!-- 38-45 is the traffic light message where yellow is below TOT range, red above, green in the range -->
 
             <p class="text-xs text-gray-500">
                 This is an estimate based on the income you recorded. Rates and thresholds can change with each Finance Act, so confirm them with KRA.

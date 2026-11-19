@@ -2,6 +2,10 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Admin — All Taxpayers</h2>
     </x-slot>
+    <a href="{{ route('admin.occupations') }}"
+        class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md text-xs font-semibold uppercase tracking-widest hover:bg-gray-700">
+        View by occupation
+    </a>
 
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -48,6 +52,7 @@
                             <th>Est. tax (KES)</th>
                             <th>Paid (KES)</th>
                             <th>Flagged entries</th>
+                            <th class="py-2 pr-4 text-left">Returns filed</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -64,6 +69,18 @@
                                         <span class="px-2 py-1 bg-red-100 text-red-800 rounded">{{ $row['flagged'] }}</span>
                                     @else
                                         <span class="text-gray-400">0</span>
+                                    @endif
+                                </td>
+                                <td class="py-2 pr-4">
+                                    {{ $row['returns_filed'] }}
+                                    @if ($row['last_return'])
+                                        <span class="text-xs px-2 py-1 rounded
+                                            {{ $row['last_return']->status === 'accepted' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m', $row['last_return']->period)->format('M Y') }}:
+                                            {{ ucfirst($row['last_return']->status) }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs px-2 py-1 rounded bg-red-100 text-red-700">None filed</span>
                                     @endif
                                 </td>
                                 <td>

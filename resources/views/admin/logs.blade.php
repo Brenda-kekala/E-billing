@@ -6,7 +6,7 @@
     <div class="py-8">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <a href="{{ route('admin.index') }}" class="text-sm text-gray-600 underline">&larr; Back to dashboard</a>
+         <x-back-button :href="route('admin.index')">Back to admin overview</x-back-button>
 
             <div class="bg-white p-6 shadow rounded overflow-x-auto">
                 <table class="w-full text-left text-sm">

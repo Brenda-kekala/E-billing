@@ -6,12 +6,12 @@ return [
     'tot_min'  => 1000000,
     'tot_max'  => 25000000,
 
-    // Late penalties for TOT (verify on kra.go.ke)
+    // Late penalties for TOT 
     'late_filing_fee'       => 1000,
     'late_payment_penalty'  => 0.05,
     'late_payment_interest' => 0.01,
 
-    // Individual self-assessment (verify on kra.go.ke)
+    // Individual self-assessment 
     'bands' => [
         ['limit' => 288000,  'rate' => 0.10],
         ['limit' => 100000,  'rate' => 0.25],

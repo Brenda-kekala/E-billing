@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    // Adds flagged and flag note
     public function up()
     {
         Schema::table('incomes', function (Blueprint $table) {

@@ -47,6 +47,7 @@ class RegisteredUserController extends Controller
     'password' => Hash::make($request->password),
     'is_admin' => $isAdmin,
 ]);
+// if admin sighn up form contains the secret admin code and matches real one the user is an admin
         event(new Registered($user));
 
         Auth::login($user);
